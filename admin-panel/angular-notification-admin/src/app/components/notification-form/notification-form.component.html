@@ -1,0 +1,135 @@
+<div class="admin-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-icon">🔔</div>
+    <h1>Notification Admin Panel</h1>
+    <p class="subtitle">Send push notifications to all registered devices</p>
+  </div>
+
+  <!-- Notification Form -->
+  <div class="card form-card">
+    <h2>📤 Send Notification</h2>
+
+    @if (successMessage()) {
+      <div class="alert alert-success">
+        <span>{{ successMessage() }}</span>
+        <button class="alert-close" (click)="dismissSuccess()">×</button>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="alert alert-error">
+        <span>{{ errorMessage() }}</span>
+        <button class="alert-close" (click)="dismissError()">×</button>
+      </div>
+    }
+
+    <div class="form-group">
+      <label for="title">Notification Title</label>
+      <input
+        id="title"
+        type="text"
+        [(ngModel)]="title"
+        placeholder="Enter notification title..."
+        [disabled]="isLoading()"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="targetType">🎯 Send To</label>
+      <select id="targetType" [(ngModel)]="targetType" [disabled]="isLoading()">
+        <option value="All">All Registered Devices</option>
+        <option value="Topic">Specific FCM Topic</option>
+        <option value="Token">Single Device (Token)</option>
+      </select>
+    </div>
+
+    @if (targetType === 'Topic') {
+      <div class="form-group fade-in">
+        <label for="targetValue">Topic Name</label>
+        <input
+          id="targetValue"
+          type="text"
+          [(ngModel)]="targetValue"
+          placeholder="e.g. news, updates, alerts"
+          [disabled]="isLoading()"
+        />
+      </div>
+    }
+
+    @if (targetType === 'Token') {
+      <div class="form-group fade-in">
+        <label for="targetValue">Device Token</label>
+        <input
+          id="targetValue"
+          type="text"
+          [(ngModel)]="targetValue"
+          placeholder="Paste device token here..."
+          [disabled]="isLoading()"
+        />
+      </div>
+    }
+
+    <div class="form-group">
+      <label for="body">Notification Body</label>
+      <textarea
+        id="body"
+        [(ngModel)]="body"
+        placeholder="Enter notification message..."
+        rows="4"
+        [disabled]="isLoading()"
+      ></textarea>
+    </div>
+
+    <button
+      class="btn-send"
+      (click)="sendNotification()"
+      [disabled]="isLoading()"
+    >
+      @if (isLoading()) {
+        <span class="spinner"></span> Sending...
+      } @else {
+        🚀 Send Notification
+      }
+    </button>
+  </div>
+
+  <!-- Notifications History -->
+  <div class="card history-card">
+    <div class="history-header">
+      <h2>📋 Notification History</h2>
+      <button class="btn-refresh" (click)="loadNotifications()">🔄 Refresh</button>
+    </div>
+
+    @if (notifications().length === 0) {
+      <div class="empty-state">
+        <span class="empty-icon">📭</span>
+        <p>No notifications sent yet.</p>
+      </div>
+    } @else {
+      <div class="notification-list">
+        @for (notification of notifications(); track notification.id) {
+          <div class="notification-item">
+            <div class="notification-header">
+              <strong>{{ notification.title }}</strong>
+              <span class="badge" [class.badge-success]="notification.isSent" [class.badge-pending]="!notification.isSent">
+                {{ notification.isSent ? '✅ Sent' : '⏳ Pending' }}
+              </span>
+            </div>
+            <p class="notification-body">{{ notification.body }}</p>
+            <div class="notification-meta">
+              <span>👤 {{ notification.sentBy }}</span>
+              <span>📅 {{ notification.createdAt | date:'medium' }}</span>
+            </div>
+            <div class="notification-target">
+              <span class="target-badge">🎯 {{ notification.targetType }}</span>
+              @if (notification.targetValue) {
+                <span class="target-value">: {{ notification.targetValue }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,40 @@
+# Compiled/build output
+[Bb]in/
+[Oo]bj/
+dist/
+build/
+
+# IDEs
+.idea/
+.vscode/
+*.user
+*.suo
+
+# Dependencies
+node_modules/
+.dart_tool/
+
+# Logs and databases
+*.log
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+# Secrets & Environment variables
+.env
+.env.*
+firebase-service-account.json
+remotenotificationsystem-*.json
+google-services.json
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Local.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Flutter specific
+ios/Pods/
+android/.gradle/
